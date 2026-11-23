@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Smart Waste Management System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --green: #16865b;
+    --dark: #123d32;
+    --light: #eaf6ef;
+    --white: #ffffff;
+}
+
+body {
+    background: #f5f9f6;
+    color: #24352d;
+}
+
+header {
+    background: var(--dark);
+    color: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #61d69b;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 22px;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: #61d69b;
+}
+
+.hero {
+    min-height: 540px;
+    padding: 100px 8%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(120deg, #e4f5e9, #f5faf5);
+    gap: 40px;
+}
+
+.hero-content {
+    max-width: 580px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    color: var(--dark);
+    line-height: 1.2;
+}
+
+.hero h1 span {
+    color: var(--green);
+}
+
+.hero p {
+    margin: 22px 0;
+    line-height: 1.8;
+    color: #52665a;
+}
+
+.btn {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    padding: 13px 25px;
+    border: none;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn:hover {
+    background: var(--dark);
+}
+
+.hero-visual {
+    font-size: 155px;
+    background: white;
+    padding: 35px;
+    border-radius: 50%;
+    box-shadow: 0 15px 40px #a4cbb5;
+}
+
+section {
+    padding: 75px 8%;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-title h2 {
+    color: var(--dark);
+    font-size: 32px;
+}
+
+.section-title p {
+    margin-top: 10px;
+    color: #75847b;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 27px;
+    border-radius: 13px;
+    box-shadow: 0 4px 18px #dce9df;
+}
+
+.stat-card {
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: var(--green);
+    font-size: 30px;
+    margin: 12px 0;
+}
+
+.stat-card p {
+    color: #77857c;
+}
+
+.icon {
+    font-size: 35px;
+}
+
+.ai-section {
+    background: var(--light);
+}
+
+.ai-container {
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px #cbded0;
+}
+
+.upload-area {
+    border: 2px dashed #72b995;
+    padding: 35px;
+    border-radius: 12px;
+    margin: 25px 0;
+}
+
+.upload-area input {
+    margin-top: 15px;
+    max-width: 100%;
+}
+
+#preview {
+    max-width: 220px;
+    max-height: 200px;
+    object-fit: contain;
+    display: none;
+    margin: 20px auto;
+    border-radius: 10px;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 18px;
+    background: #eaf6ef;
+    border-radius: 10px;
+    display: none;
+}
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.category {
+    text-align: center;
+}
+
+.category h3 {
+    margin: 15px 0 8px;
+    color: var(--dark);
+}
+
+.category p {
+    color: #718076;
+    font-size: 14px;
+}
+
+.bin-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.bin {
+    text-align: center;
+}
+
+.progress {
+    background: #e6eee8;
+    height: 12px;
+    border-radius: 20px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--green);
+    border-radius: 20px;
+}
+
+.chart-container {
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.pickup {
+    background: var(--light);
+}
+
+.pickup-form {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 13px;
+    margin: 10px 0 18px;
+    border: 1px solid #ccd9ce;
+    border-radius: 6px;
+    outline-color: var(--green);
+}
+
+label {
+    font-weight: 600;
+}
+
+footer {
+    background: var(--dark);
+    color: white;
+    text-align: center;
+    padding: 30px;
+    line-height: 1.8;
+}
+
+@media(max-width: 850px) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    nav a {
+        margin: 0;
+    }
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .stats, .categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 480px) {
+    .stats, .categories {
+        grid-template-columns: 1fr;
+    }
+
+    section {
+        padding: 55px 5%;
+    }
+
+    .hero-visual {
+        font-size: 100px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">♻ Eco<span>Smart AI</span></div>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#detect">AI Detection</a>
+        <a href="#categories">Categories</a>
+        <a href="#bins">Smart Bins</a>
+        <a href="#pickup">Pickup</a>
+    </nav>
+</header>
+
+<!-- HOME -->
+
+<div class="hero" id="home">
+    <div class="hero-content">
+        <h1>AI Smart <span>Waste Management</span> System</h1>
+
+        <p>
+            A smarter and greener future starts with intelligent
+            waste management. Use Artificial Intelligence to
+            identify waste, improve recycling and create a cleaner
+            environment.
+        </p>
+
+        <a href="#detect" class="btn">Try AI Waste Detection →</a>
+    </div>
+
+    <div class="hero-visual">♻️</div>
+</div>
+
+<!-- DASHBOARD -->
+
+<section id="dashboard">
+
+    <div class="section-title">
+        <h2>Smart Waste Dashboard</h2>
+        <p>Monitor waste management and recycling activities</p>
+    </div>
+
+    <div class="stats">
+
+        <div class="card stat-card">
+            <div class="icon">🗑️</div>
+            <h3>1,250 kg</h3>
+            <p>Total Waste Collected</p>
+        </div>
+
+        <div class="card stat-card">
+            <div class="icon">♻️</div>
+            <h3>780 kg</h3>
+            <p>Waste Recycled</p>
+        </div>
+
+        <div class="card stat-card">
+            <div class="icon">🌱</div>
+            <h3>62.4%</h3>
+            <p>Recycling Rate</p>
+        </div>
+
+        <div class="card stat-card">
+            <div class="icon">🏙️</div>
+            <h3>25</h3>
+            <p>Smart Bins</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- AI DETECTION -->
+
+<section class="ai-section" id="detect">
+
+    <div class="section-title">
+        <h2>AI Waste Detection</h2>
+        <p>Upload a waste image to identify its category</p>
+    </div>
+
+    <div class="ai-container">
+
+        <h3>🤖 Intelligent Waste Classifier</h3>
+
+        <div class="upload-area">
+            <h3>📷 Upload Waste Image</h3>
+            <p>Select an image from your device</p>
+
+            <input type="file" id="imageInput" accept="image/*">
+
+            <img id="preview" alt="Waste image preview">
+
+            <br>
+
+            <button class="btn" onclick="classifyWaste()">
+                Analyze Waste
+            </button>
+        </div>
+
+        <div id="result"></div>
+
+        <p style="font-size:12px;color:#829087;margin-top:15px">
+            Demonstration classifier: uses image filename hints,
+            not a trained AI image-recognition model.
+        </p>
+
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+
+<section id="categories">
+
+    <div class="section-title">
+        <h2>Waste Categories</h2>
+        <p>Understand different types of waste and their disposal</p>
+    </div>
+
+    <div class="categories">
+
+        <div class="card category">
+            <div class="icon">🍃</div>
+            <h3>Wet Waste</h3>
+            <p>Food scraps, fruit peels and organic materials.</p>
+        </div>
+
+        <div class="card category">
+            <div class="icon">📦</div>
+            <h3>Dry Waste</h3>
+            <p>Paper, cardboard and other dry materials.</p>
+        </div>
+
+        <div class="card category">
+            <div class="icon">♻️</div>
+            <h3>Recyclable</h3>
+            <p>Plastic bottles, glass and metal containers.</p>
+        </div>
+
+        <div class="card category">
+            <div class="icon">⚠️</div>
+            <h3>Hazardous Waste</h3>
+            <p>Batteries, electronic waste and chemicals.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- SMART BINS -->
+
+<section id="bins" style="background:#edf6ef">
+
+    <div class="section-title">
+        <h2>Smart Bin Monitoring</h2>
+        <p>Example bin fill-level data</p>
+    </div>
+
+    <div class="bin-grid">
+
+        <div class="card bin">
+            <div class="icon">🟢</div>
+            <h3>Wet Waste Bin</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width:65%"></div>
+            </div>
+            <p>65% Filled</p>
+            <p style="color:green">Normal Level</p>
+        </div>
+
+        <div class="card bin">
+            <div class="icon">🔵</div>
+            <h3>Dry Waste Bin</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width:85%;background:#e6a23c"></div>
+            </div>
+            <p>85% Filled</p>
+            <p style="color:#c17b15">Collection Recommended</p>
+        </div>
+
+        <div class="card bin">
+            <div class="icon">🟡</div>
+            <h3>Recyclable Bin</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width:40%"></div>
+            </div>
+            <p>40% Filled</p>
+            <p style="color:green">Normal Level</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- STATISTICS -->
+
+<section id="statistics">
+
+    <div class="section-title">
+        <h2>Waste Analytics</h2>
+        <p>Illustrative waste distribution statistics</p>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="wasteChart"></canvas>
+    </div>
+
+</section>
+
+<!-- PICKUP -->
+
+<section class="pickup" id="pickup">
+
+    <div class="section-title">
+        <h2>Smart Waste Pickup</h2>
+        <p>Submit a request for waste collection</p>
+    </div>
+
+    <div class="pickup-form">
+
+        <form id="pickupForm">
+
+            <label>Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required>
+
+            <label>Location</label>
+            <input type="text" id="location" placeholder="Enter your location" required>
+
+            <label>Waste Type</label>
+            <select id="wasteType" required>
+                <option value="">Select Waste Type</option>
+                <option>Wet Waste</option>
+                <option>Dry Waste</option>
+                <option>Recyclable Waste</option>
+                <option>Hazardous Waste</option>
+            </select>
+
+            <label>Additional Information</label>
+            <textarea id="details" rows="4" placeholder="Enter details"></textarea>
+
+            <button class="btn" type="submit">Request Collection</button>
+
+            <p id="pickupMessage" style="margin-top:15px;color:green"></p>
+
+        </form>
+
+    </div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section id="about">
+
+    <div class="section-title">
+        <h2>About Our Project</h2>
+        <p>Technology for a sustainable tomorrow</p>
+    </div>
+
+    <div class="card" style="max-width:850px;margin:auto;text-align:center">
+
+        <h3 style="color:#16865b">Our Mission 🌍</h3>
+
+        <p style="line-height:2;margin-top:15px">
+            The AI Smart Waste Management System aims to improve
+            waste segregation, recycling and collection using
+            Artificial Intelligence and smart technology.
+
+            It promotes responsible waste disposal, reduces
+            environmental pollution and supports the development
+            of cleaner and smarter cities.
+        </p>
+
+        <br>
+
+        <h3 style="color:#16865b">Key Objectives</h3>
+
+        <p style="line-height:2;margin-top:10px">
+            ✔ Automatic waste identification<br>
+            ✔ Better waste segregation<br>
+            ✔ Smart bin monitoring<br>
+            ✔ Efficient waste collection<br>
+            ✔ Environmental sustainability
+        </p>
+
+    </div>
+
+</section>
+
+<footer>
+    <h2>♻ EcoSmart AI</h2>
+    <p>AI Smart Waste Management System</p>
+    <p>Building a Cleaner and Greener Future 🌱</p>
+    <p>© 2026 EcoSmart AI | Academic Project</p>
+</footer>
+
+<script>
+
+// IMAGE PREVIEW
+
+const imageInput = document.getElementById("imageInput");
+
+imageInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if(file) {
+        document.getElementById("preview").src =
+            URL.createObjectURL(file);
+
+        document.getElementById("preview").style.display = "block";
+
+        document.getElementById("result").style.display = "none";
+    }
+
+});
+
+// DEMONSTRATION WASTE CLASSIFIER
+
+function classifyWaste() {
+
+    const file = imageInput.files[0];
+
+    if(!file) {
+        alert("Please upload an image first!");
+        return;
+    }
+
+    const filename = file.name.toLowerCase();
+
+    let category = "Dry Waste";
+    let disposal = "Place it in the dry waste bin.";
+    let confidence = "Demo result";
+
+    if(/banana|food|vegetable|fruit|leaf|peel/.test(filename)) {
+        category = "Wet Waste";
+        disposal = "Place it in the wet waste bin.";
+    }
+
+    else if(/plastic|bottle|metal|glass|can/.test(filename)) {
+        category = "Recyclable Waste";
+        disposal = "Send it to the appropriate recycling bin.";
+    }
+
+    else if(/battery|chemical|electronic|toxic/.test(filename)) {
+        category = "Hazardous Waste";
+        disposal = "Take it to an authorized hazardous waste collection facility.";
+    }
+
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("result").innerHTML = `
+        <h3>🔍 Classification Result</h3>
+        <h2 style="color:#16865b;margin:12px">
+            ${category}
+        </h2>
+        <p>${disposal}</p>
+        <p style="margin-top:10px;font-size:13px">
+            ${confidence} — filename-based demonstration,
+            not AI image recognition.
+        </p>
+    `;
+}
+
+// WASTE ANALYTICS CHART
+
+new Chart(document.getElementById("wasteChart"), {
+
+    type: "doughnut",
+
+    data: {
+        labels: [
+            "Wet Waste",
+            "Dry Waste",
+            "Recyclable Waste",
+            "Hazardous Waste"
+        ],
+
+        datasets: [{
+            data: [35, 25, 30, 10],
+            backgroundColor: [
+                "#48a878",
+                "#e8b44d",
+                "#4389c7",
+                "#d96c65"
+            ],
+            borderWidth: 2
+        }]
+    },
+
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "bottom"
+            },
+            title: {
+                display: true,
+                text: "Waste Distribution (%)"
+            }
+        }
+    }
+
+});
+
+// PICKUP REQUEST DEMO
+
+document.getElementById("pickupForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+
+    document.getElementById("pickupMessage").innerText =
+        "Thank you, " + name +
+        "! Your demo collection request has been recorded.";
+
+    this.reset();
+
+});
+
+</script>
+
+</body>
+</html>
